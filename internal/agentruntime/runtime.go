@@ -559,8 +559,9 @@ func (b *Builder) Build(ctx context.Context, spec SessionSpec) (*Runtime, error)
 	reg.Register(&agent.TodoWriteTool{Store: planStore})
 	reg.Register(&agent.ExitPlanModeTool{})
 	reg.Register(&agent.EnterPlanModeTool{State: planMode})
+	loopControlTool := &agent.LoopControlTool{State: loopControl}
+	reg.Register(loopControlTool)
 	reg.Register(&agent.AskUserQuestionTool{})
-	reg.Register(&agent.LoopControlTool{State: loopControl})
 
 	validSubagentTools := reg.Names()
 	validSubagentTools[agent.ConsultAdvisorToolName] = true
@@ -574,6 +575,8 @@ func (b *Builder) Build(ctx context.Context, spec SessionSpec) (*Runtime, error)
 		subagentTasks.Import(sess.SubagentTasks)
 	}
 	rt.SubagentTasks = subagentTasks
+	// A --verify loop's stop gate reads this iteration's verification run here.
+	loopControlTool.Tasks = subagentTasks
 
 	// Shared across the parent's own tool calls (cfg.MutationLocks below)
 	// and every subagent it spawns (agentTool.MutationLocks -> runChild):
