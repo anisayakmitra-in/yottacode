@@ -6,6 +6,8 @@ the project uses semantic versioning once it's past `1.0.0`.
 
 ## Unreleased
 
+worktree-dispatcher-ga
+- Keep `dispatch` and `integrate` behind their experimental opt-in while integration serialization, dirty-state protection, and branch provenance validation harden the feature.
 ### Fixed
 
 - **Document tools hardening ahead of GA confidence.** `read_document` on
